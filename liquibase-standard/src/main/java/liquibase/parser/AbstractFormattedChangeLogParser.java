@@ -222,6 +222,7 @@ public abstract class AbstractFormattedChangeLogParser implements ChangeLogParse
     protected abstract void setChangeSequence(AbstractSQLChange change, String finalCurrentSequence);
 
     protected abstract boolean isNotEndDelimiter(AbstractSQLChange change);
+    protected abstract boolean isNotEndDelimiterRollback(AbstractSQLChange change);
 
     protected abstract void setChangeSequence(ChangeLogParameters changeLogParameters, StringBuilder currentSequence, ChangeSet changeSet, AbstractSQLChange change);
 
@@ -740,6 +741,10 @@ public abstract class AbstractFormattedChangeLogParser implements ChangeLogParse
         }
         if (rollbackEndDelimiter != null) {
             rollbackChange.setEndDelimiter(rollbackEndDelimiter);
+        } else {
+            if (isNotEndDelimiterRollback(rollbackChange)) {
+                rollbackChange.setEndDelimiter("/$");
+            }
         }
         changeSet.addRollbackChange(rollbackChange);
     }

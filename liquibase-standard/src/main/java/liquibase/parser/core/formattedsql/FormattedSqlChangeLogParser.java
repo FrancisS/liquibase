@@ -142,6 +142,14 @@ public class FormattedSqlChangeLogParser extends AbstractFormattedChangeLogParse
     }
 
     @Override
+    protected boolean isNotEndDelimiterRollback(AbstractSQLChange change) {
+        if (change instanceof RawSQLChange) {
+            return (change.getEndDelimiter() == null) && StringUtil.trimToEmpty(change.getSql()).endsWith("/");
+        }
+        return false;
+    }
+
+    @Override
     protected void setChangeSequence(ChangeLogParameters changeLogParameters, StringBuilder currentSequence, ChangeSet changeSet, AbstractSQLChange change) {
         change.setSql(changeLogParameters.expandExpressions(StringUtil.trimToNull(currentSequence.toString()), changeSet.getChangeLog()));
     }
